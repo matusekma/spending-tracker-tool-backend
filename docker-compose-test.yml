@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:15.1
+    restart: always
+    environment:
+      - POSTGRES_DB=spending_tracker_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./spending-tracker-test-volume:/var/lib/postgresql/data
+    networks:
+      - spending_tracker_test_network
+
+networks:
+  spending_tracker_test_network:
+    driver: bridge
+volumes:
+  spending-tracker-test-volume:

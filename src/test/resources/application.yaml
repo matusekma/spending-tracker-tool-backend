@@ -1,0 +1,39 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+  port: 8080
+
+spring:
+  application:
+    name: spending-tracker-tool-backend-test
+  security:
+    user:
+      name: user
+      password: password
+  datasource:
+    url: jdbc:postgresql://localhost:5433/spending_tracker_test
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:5433/spending_tracker_test
+    user: postgres
+    password: postgres
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
