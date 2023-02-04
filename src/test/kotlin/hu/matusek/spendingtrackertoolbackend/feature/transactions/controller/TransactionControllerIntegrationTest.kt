@@ -6,6 +6,7 @@ import hu.matusek.spendingtrackertoolbackend.getTestTransaction
 import hu.matusek.spendingtrackertoolbackend.repository.TransactionRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,6 +60,39 @@ class TransactionControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound
+        }
+    }
+
+    @Nested
+    inner class TestDeleteById {
+
+        @AfterEach
+        fun afterEach() {
+            transactionRepository.deleteAll()
+        }
+
+        @Test
+        fun `the DELETE by id endpoint should return delete the transaction with the given id`() {
+            val savedTransaction = transactionRepository.save(getTestTransaction())
+
+            webTestClient
+                .delete()
+                .uri("/transactions/${savedTransaction.id}")
+                .exchange()
+                .expectStatus()
+                .isNoContent
+
+            assertTrue(transactionRepository.findById(savedTransaction.id!!).isEmpty)
+        }
+
+        @Test
+        fun `the DELETE by id endpoint should be idempotent and not return error when the transaction does not exist`() {
+            webTestClient
+                .delete()
+                .uri("/transactions/1")
+                .exchange()
+                .expectStatus()
+                .isNoContent
         }
     }
 }

@@ -8,4 +8,8 @@ import org.springframework.web.bind.annotation.RestController
 class TransactionController(private val transactionService: TransactionService) : TransactionApi {
 
     override fun getTransaction(id: Long): TransactionResponse = transactionService.getTransactionById(id)
+
+    override fun deleteTransaction(id: Long) {
+        transactionService.deleteTransactionById(id)
+    }
 }

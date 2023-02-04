@@ -2,6 +2,7 @@ package hu.matusek.spendingtrackertoolbackend.error
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.core.env.Environment
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -15,7 +16,10 @@ class ExceptionHandlingControllerAdvice(environment: Environment) {
 
     val isDevelopmentProfile = environment.activeProfiles.any { listOf("dev", "test").contains(it) }
 
-    @ExceptionHandler(EntityNotFoundException::class)
+    @ExceptionHandler(
+        EntityNotFoundException::class,
+        EmptyResultDataAccessException::class
+    )
     fun handleEntityNotFoundException(e: Exception): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.NOT_FOUND, "Entity not found!", e)
 

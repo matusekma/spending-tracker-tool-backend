@@ -5,5 +5,6 @@ import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.Transactio
 interface TransactionService {
 
     fun getTransactionById(id: Long): TransactionResponse
+    fun deleteTransactionById(id: Long)
 
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import java.util.*
 
@@ -26,11 +26,10 @@ class TransactionServiceImplTest {
     inner class TestGetTransactionById {
         @Test
         fun `given a transaction exists, when getTransactionById is called, then it should return the transaction`() {
-            val testId = 1L
             val expectedTransaction = getTestTransaction()
-            `when`(transactionRepository.findById(testId)).thenReturn(Optional.of(expectedTransaction))
+            `when`(transactionRepository.findById(expectedTransaction.id!!)).thenReturn(Optional.of(expectedTransaction))
 
-            val transactionResponse = transactionService.getTransactionById(testId)
+            val transactionResponse = transactionService.getTransactionById(expectedTransaction.id!!)
 
             assertTransactionResponse(expectedTransaction, transactionResponse)
         }
@@ -41,6 +40,28 @@ class TransactionServiceImplTest {
             `when`(transactionRepository.findById(testId)).thenReturn(Optional.empty())
 
             assertThrows<EntityNotFoundException> { transactionService.getTransactionById(testId) }
+        }
+    }
+
+    @Nested
+    inner class TestDeleteTransactionById {
+        @Test
+        fun `given the transaction does not exist, when deleteTransactionById is called, then it should not call deleteById`() {
+            val testId = 1L
+
+            transactionService.deleteTransactionById(testId)
+
+            verify(transactionRepository, never()).deleteById(testId)
+        }
+
+        @Test
+        fun `given the transaction exists, when deleteTransactionById is called, then it should call deleteById`() {
+            val testId = 1L
+            `when`(transactionRepository.existsById(testId)).thenReturn(true)
+
+            transactionService.deleteTransactionById(testId)
+
+            verify(transactionRepository).deleteById(testId)
         }
     }
 

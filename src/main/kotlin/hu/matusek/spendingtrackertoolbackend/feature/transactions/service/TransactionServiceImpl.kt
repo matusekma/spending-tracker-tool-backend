@@ -15,4 +15,10 @@ class TransactionServiceImpl(private val transactionRepository: TransactionRepos
             .orElseThrow { throw EntityNotFoundException("Transaction not found!") } // TODO localization
             .toTransactionResponse()
 
+    override fun deleteTransactionById(id: Long) {
+        if (transactionRepository.existsById(id)) {
+            transactionRepository.deleteById(id)
+        }
+    }
+
 }
