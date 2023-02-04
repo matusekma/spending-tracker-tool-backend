@@ -5,6 +5,7 @@ import hu.matusek.spendingtrackertoolbackend.domain.Currency
 import hu.matusek.spendingtrackertoolbackend.domain.Transaction
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionRequest
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionResponse
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.EditTransactionResponse
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionResponse
 import org.junit.jupiter.api.Assertions
 import java.math.BigDecimal
@@ -32,6 +33,20 @@ fun assertCreateTransactionResponse(
         Assertions.assertEquals(sum, createTransactionResponse.sum)
         Assertions.assertEquals(currency, createTransactionResponse.currency)
         Assertions.assertEquals(paid.toEpochSecond(), createTransactionResponse.paid.toEpochSecond())
+    }
+}
+
+fun assertEditTransactionResponse(
+    editedTransaction: Transaction,
+    editTransactionResponse: EditTransactionResponse
+) {
+    editedTransaction.run {
+        Assertions.assertEquals(id, editTransactionResponse.id)
+        Assertions.assertEquals(summary, editTransactionResponse.summary)
+        Assertions.assertEquals(category, Category.valueOf(editTransactionResponse.category.uppercase()))
+        Assertions.assertEquals(sum, editTransactionResponse.sum)
+        Assertions.assertEquals(currency, editTransactionResponse.currency)
+        Assertions.assertEquals(paid.toEpochSecond(), editTransactionResponse.paid.toEpochSecond())
     }
 }
 

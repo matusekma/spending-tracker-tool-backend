@@ -1,11 +1,11 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.service
 
-import hu.matusek.spendingtrackertoolbackend.assertCreateTransactionResponse
-import hu.matusek.spendingtrackertoolbackend.assertTransactionResponse
+import hu.matusek.spendingtrackertoolbackend.*
+import hu.matusek.spendingtrackertoolbackend.domain.Category
+import hu.matusek.spendingtrackertoolbackend.domain.Currency
 import hu.matusek.spendingtrackertoolbackend.domain.Transaction
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.EditTransactionRequest
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.toTransaction
-import hu.matusek.spendingtrackertoolbackend.getTestCreateTransactionRequest
-import hu.matusek.spendingtrackertoolbackend.getTestTransaction
 import hu.matusek.spendingtrackertoolbackend.repository.TransactionRepository
 import jakarta.persistence.EntityNotFoundException
 import org.junit.jupiter.api.Nested
@@ -15,6 +15,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import java.math.BigDecimal
+import java.time.OffsetDateTime
 import java.util.*
 
 @SpringJUnitConfig
@@ -59,6 +61,49 @@ class TransactionServiceImplTest {
             val createTransactionResponse = transactionService.createTransaction(createTransactionRequest)
 
             assertCreateTransactionResponse(savedTransaction, createTransactionResponse)
+        }
+    }
+
+    @Nested
+    inner class TestEditTransaction {
+        @Test
+        fun `given a transaction exists, when editTransaction is called, then it should return the edited transaction`() {
+            val transaction = getTestTransaction()
+            `when`(transactionRepository.findById(transaction.id!!)).thenReturn(Optional.of(transaction))
+            val editTransactionRequest = EditTransactionRequest(
+                summary = "Edited summary",
+                category = Category.ENTERTAINMENT,
+                sum = BigDecimal.valueOf(1.56),
+                currency = Currency.USD,
+                paid = OffsetDateTime.now()
+            )
+
+            val editTransactionResponse = transactionService.editTransaction(transaction.id!!, editTransactionRequest)
+
+            val editedTransaction = Transaction(
+                transaction.id,
+                editTransactionRequest.summary!!,
+                editTransactionRequest.category!!,
+                editTransactionRequest.sum!!,
+                editTransactionRequest.currency!!,
+                editTransactionRequest.paid!!
+            )
+            assertEditTransactionResponse(editedTransaction, editTransactionResponse)
+        }
+
+        @Test
+        fun `given a transaction does not exist, when editTransaction is called, then it should throw EntityNotFoundException`() {
+            val testId = 1L
+            `when`(transactionRepository.findById(testId)).thenReturn(Optional.empty())
+            val editTransactionRequest = EditTransactionRequest(
+                summary = "Edited summary",
+                category = Category.ENTERTAINMENT,
+                sum = BigDecimal.valueOf(1.56),
+                currency = Currency.USD,
+                paid = OffsetDateTime.now()
+            )
+
+            assertThrows<EntityNotFoundException> { transactionService.editTransaction(testId, editTransactionRequest) }
         }
     }
 

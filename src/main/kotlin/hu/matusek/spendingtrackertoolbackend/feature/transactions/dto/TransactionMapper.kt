@@ -31,3 +31,13 @@ fun CreateTransactionRequest.toTransaction() =
         currency!!,
         paid!!
     )
+
+fun Transaction.toEditTransactionResponse() =
+    EditTransactionResponse(
+        id = id!!,
+        summary = summary,
+        category = category.name.lowercase(),
+        sum = sum,
+        currency = currency,
+        paid = paid
+    )
