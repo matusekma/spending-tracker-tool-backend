@@ -2,6 +2,7 @@ package hu.matusek.spendingtrackertoolbackend.domain
 
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.time.OffsetDateTime
 
 
 @Entity
@@ -13,5 +14,6 @@ class Transaction(
     var category: Category,
     var sum: BigDecimal,
     @Enumerated(EnumType.STRING)
-    var currency: Currency
+    var currency: Currency,
+    var paid: OffsetDateTime
 ) : BaseEntity(id)
