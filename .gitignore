@@ -37,3 +37,5 @@ out/
 .vscode/
 
 .env
+spending-tracker-volume
+spending-tracker-test-volume
