@@ -6,11 +6,11 @@ import jakarta.validation.constraints.Size
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-class EditTransactionRequest(
+data class EditTransactionRequest(
     @field:Size(min = 1)
-    val summary: String?,
-    val category: Category?,
-    val sum: BigDecimal?,
-    val currency: Currency?,
-    val paid: OffsetDateTime?,
+    val summary: String? = null,
+    val category: Category? = null,
+    val sum: BigDecimal? = null,
+    val currency: Currency? = null,
+    val paid: OffsetDateTime? = null,
 )
