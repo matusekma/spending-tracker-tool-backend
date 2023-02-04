@@ -1,6 +1,7 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.controller
 
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionRequest
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.EditTransactionRequest
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionResponse
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.service.TransactionService
 import org.springframework.web.bind.annotation.RestController
@@ -14,6 +15,8 @@ class TransactionController(private val transactionService: TransactionService) 
     override fun createTransaction(createTransactionRequest: CreateTransactionRequest) =
         transactionService.createTransaction(createTransactionRequest)
 
+    override fun editTransaction(id: Long, editTransactionRequest: EditTransactionRequest) =
+        transactionService.editTransaction(id, editTransactionRequest)
 
     override fun deleteTransaction(id: Long) {
         transactionService.deleteTransactionById(id)

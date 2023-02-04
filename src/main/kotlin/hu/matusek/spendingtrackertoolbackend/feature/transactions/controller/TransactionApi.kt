@@ -1,8 +1,6 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.controller
 
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionRequest
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionResponse
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionResponse
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.*
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -18,6 +16,12 @@ interface TransactionApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createTransaction(@Valid @RequestBody createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
+
+    @PutMapping("/{id}")
+    fun editTransaction(
+        @PathVariable("id") id: Long,
+        @Valid @RequestBody editTransactionRequest: EditTransactionRequest
+    ): EditTransactionResponse
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

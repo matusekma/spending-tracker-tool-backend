@@ -10,14 +10,18 @@ import hu.matusek.spendingtrackertoolbackend.repository.TransactionRepository
 import jakarta.persistence.EntityNotFoundException
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import java.math.BigDecimal
-import java.time.OffsetDateTime
 import java.util.*
+import java.util.stream.Stream
 
 @SpringJUnitConfig
 class TransactionServiceImplTest {
@@ -64,32 +68,46 @@ class TransactionServiceImplTest {
         }
     }
 
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     inner class TestEditTransaction {
         @Test
         fun `given a transaction exists, when editTransaction is called, then it should return the edited transaction`() {
             val transaction = getTestTransaction()
             `when`(transactionRepository.findById(transaction.id!!)).thenReturn(Optional.of(transaction))
-            val editTransactionRequest = EditTransactionRequest(
-                summary = "Edited summary",
-                category = Category.ENTERTAINMENT,
-                sum = BigDecimal.valueOf(1.56),
-                currency = Currency.USD,
-                paid = OffsetDateTime.now()
-            )
+            val editTransactionRequest = getTestEditTransactionRequest()
 
             val editTransactionResponse = transactionService.editTransaction(transaction.id!!, editTransactionRequest)
 
-            val editedTransaction = Transaction(
-                transaction.id,
-                editTransactionRequest.summary!!,
-                editTransactionRequest.category!!,
-                editTransactionRequest.sum!!,
-                editTransactionRequest.currency!!,
-                editTransactionRequest.paid!!
-            )
+            val editedTransaction = editTransactionRequest.run {
+                Transaction(
+                    transaction.id,
+                    summary!!,
+                    category!!,
+                    sum!!,
+                    currency!!,
+                    paid!!
+                )
+            }
             assertEditTransactionResponse(editedTransaction, editTransactionResponse)
         }
+
+        @ParameterizedTest
+        @MethodSource("getEditTransactionRequestsWithOneFieldAndEditedTransaction")
+        fun `given a transaction exists, when editTransaction is called with one field, then it should only edit that field and return the edited transaction`(
+            editTransactionRequest: EditTransactionRequest, editedTransaction: Transaction
+        ) {
+            val transaction = getTestTransaction()
+            `when`(transactionRepository.findById(transaction.id!!)).thenReturn(Optional.of(transaction))
+            editedTransaction.id = transaction.id
+
+            val editTransactionResponse = transactionService.editTransaction(transaction.id!!, editTransactionRequest)
+
+            assertEditTransactionResponse(editedTransaction, editTransactionResponse)
+        }
+
+        private fun getEditTransactionRequestsWithOneFieldAndEditedTransaction(): Stream<Arguments> =
+            getTestEditTransactionRequestsWithOneFieldAndEditedTransaction()
 
         @Test
         fun `given a transaction does not exist, when editTransaction is called, then it should throw EntityNotFoundException`() {
@@ -100,7 +118,7 @@ class TransactionServiceImplTest {
                 category = Category.ENTERTAINMENT,
                 sum = BigDecimal.valueOf(1.56),
                 currency = Currency.USD,
-                paid = OffsetDateTime.now()
+                paid = getTestOffsetDateTime()
             )
 
             assertThrows<EntityNotFoundException> { transactionService.editTransaction(testId, editTransactionRequest) }

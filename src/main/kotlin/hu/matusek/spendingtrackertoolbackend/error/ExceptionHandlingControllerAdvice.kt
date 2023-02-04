@@ -5,6 +5,8 @@ import org.springframework.core.env.Environment
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -31,6 +33,15 @@ class ExceptionHandlingControllerAdvice(environment: Environment) {
     fun handleInvalidRequestErrorException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request", e, e.fieldErrors)
 
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> =
+        createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request", e)
+
+    @ExceptionHandler(
+        HttpRequestMethodNotSupportedException::class
+    )
+    fun handleHttpRequestMethodNotSupportedException(e: Exception): ResponseEntity<ErrorResponse> =
+        createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed!", e)
 
     @ExceptionHandler(
         Exception::class
