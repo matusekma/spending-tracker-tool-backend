@@ -16,4 +16,30 @@ class Transaction(
     @Enumerated(EnumType.STRING)
     var currency: Currency,
     var paid: OffsetDateTime
-) : BaseEntity(id)
+) : BaseEntity(id) {
+
+    constructor(
+        id: Long?,
+        summary: String,
+        category: String,
+        sum: BigDecimal,
+        currency: Currency,
+        paid: OffsetDateTime
+    ) : this(
+        id,
+        summary,
+        Category.valueOf(category.uppercase()),
+        sum,
+        currency,
+        paid
+    )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        return id != null && id == (other as Transaction).id
+    }
+
+    override fun hashCode(): Int = id?.hashCode() ?: 0
+}
+

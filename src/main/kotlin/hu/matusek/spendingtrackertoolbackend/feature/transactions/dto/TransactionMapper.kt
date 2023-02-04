@@ -11,3 +11,23 @@ fun Transaction.toTransactionResponse() =
         currency = currency,
         paid = paid
     )
+
+fun Transaction.toCreateTransactionResponse() =
+    CreateTransactionResponse(
+        id = id!!,
+        summary = summary,
+        category = category.name.lowercase(),
+        sum = sum,
+        currency = currency,
+        paid = paid
+    )
+
+fun CreateTransactionRequest.toTransaction() =
+    Transaction(
+        null,
+        summary!!,
+        category!!,
+        sum!!,
+        currency!!,
+        paid!!
+    )

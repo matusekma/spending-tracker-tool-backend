@@ -1,6 +1,10 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.service
 
+import hu.matusek.spendingtrackertoolbackend.assertCreateTransactionResponse
 import hu.matusek.spendingtrackertoolbackend.assertTransactionResponse
+import hu.matusek.spendingtrackertoolbackend.domain.Transaction
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.toTransaction
+import hu.matusek.spendingtrackertoolbackend.getTestCreateTransactionRequest
 import hu.matusek.spendingtrackertoolbackend.getTestTransaction
 import hu.matusek.spendingtrackertoolbackend.repository.TransactionRepository
 import jakarta.persistence.EntityNotFoundException
@@ -40,6 +44,21 @@ class TransactionServiceImplTest {
             `when`(transactionRepository.findById(testId)).thenReturn(Optional.empty())
 
             assertThrows<EntityNotFoundException> { transactionService.getTransactionById(testId) }
+        }
+    }
+
+    @Nested
+    inner class TestCreateTransaction {
+        @Test
+        fun `when createTransaction is called, then it should return the created transaction`() {
+            val testId = 1L
+            val createTransactionRequest = getTestCreateTransactionRequest()
+            val savedTransaction = createTransactionRequest.toTransaction().apply { id = testId }
+            `when`(transactionRepository.save(any(Transaction::class.java))).thenReturn(savedTransaction)
+
+            val createTransactionResponse = transactionService.createTransaction(createTransactionRequest)
+
+            assertCreateTransactionResponse(savedTransaction, createTransactionResponse)
         }
     }
 
