@@ -1,5 +1,7 @@
 package hu.matusek.spendingtrackertoolbackend.domain
 
+import com.fasterxml.jackson.annotation.JsonValue
+
 enum class Category {
     HOUSING,
     TRAVEL,
@@ -10,5 +12,8 @@ enum class Category {
     FINANCIAL,
     LIFESTYLE,
     ENTERTAINMENT,
-    MISCELLANEOUS
+    MISCELLANEOUS;
+
+    @JsonValue
+    fun toText() = name.lowercase()
 }
