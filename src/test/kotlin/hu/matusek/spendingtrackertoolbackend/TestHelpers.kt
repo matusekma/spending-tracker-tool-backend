@@ -51,7 +51,7 @@ fun getTestCreateTransactionRequest() =
     getTestTransaction().run {
         CreateTransactionRequest(
             summary,
-            category.name.lowercase(),
+            category,
             sum,
             currency,
             paid
@@ -61,7 +61,7 @@ fun getTestCreateTransactionRequest() =
 fun Transaction.toTestCreateTransactionRequest() =
     CreateTransactionRequest(
         summary,
-        category.name.lowercase(),
+        category,
         sum,
         currency,
         paid

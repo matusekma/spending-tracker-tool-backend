@@ -1,6 +1,8 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.controller
 
 import hu.matusek.spendingtrackertoolbackend.*
+import hu.matusek.spendingtrackertoolbackend.domain.Category
+import hu.matusek.spendingtrackertoolbackend.domain.Currency
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionRequest
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionResponse
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionResponse
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.returnResult
+import java.time.OffsetDateTime
 import java.util.stream.Stream
 
 
@@ -110,7 +113,6 @@ class TransactionControllerIntegrationTest {
         private fun getInvalidTransactions(): Stream<CreateTransactionRequest> =
             Stream.of(
                 getTestCreateTransactionRequest().copy(summary = ""),
-                getTestCreateTransactionRequest().copy(category = ""),
             )
 
         @ParameterizedTest
@@ -131,10 +133,10 @@ class TransactionControllerIntegrationTest {
         private fun getTransactionJsonsWithMissingFields(): Stream<String> {
             val validObject = JSONObject().apply {
                 put("summary", "Test")
-                put("category", "food")
+                put("category", Category.FOOD.name)
                 put("sum", "12.0")
-                put("currency", "HUF")
-                put("paid", "2022-04-21T10:21:00Z")
+                put("currency", Currency.HUF.name)
+                put("paid", OffsetDateTime.now().toString())
             }
             val emptyObject = JSONObject()
             val missingSummary = JSONObject(validObject.toString()).apply { remove("summary") }

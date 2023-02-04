@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class CategoryConverter : Converter<String, Category> {
-
     override fun convert(categoryString: String): Category? =
         if (categoryString.isBlank()) null else Category.valueOf(categoryString.uppercase())
 
