@@ -5,6 +5,7 @@ import org.springframework.core.env.Environment
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import java.io.PrintWriter
@@ -25,9 +26,16 @@ class ExceptionHandlingControllerAdvice(environment: Environment) {
 
 
     @ExceptionHandler(
+        MethodArgumentNotValidException::class
+    )
+    fun handleInvalidRequestErrorException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> =
+        createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request", e, e.fieldErrors)
+
+
+    @ExceptionHandler(
         Exception::class
     )
-    fun internalServerErrorException(e: Exception): ResponseEntity<ErrorResponse> =
+    fun handleInternalServerErrorException(e: Exception): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error happened!", e)
 
 
