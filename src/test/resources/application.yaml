@@ -12,10 +12,11 @@ spring:
       name: user
       password: password
   datasource:
-    url: jdbc:postgresql://localhost:5433/spending_tracker_test
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:tc:postgresql:15.1:///spending_tracker_test?serverTimezone=UTC&TC_REUSABLE=true
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  test:
+    database:
+      replace: none
   jpa:
     properties:
       hibernate:
@@ -27,7 +28,6 @@ spring:
     show-sql: true
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5433/spending_tracker_test
     user: postgres
     password: postgres
     change-log: classpath:/db/changelog/db.changelog-master.xml

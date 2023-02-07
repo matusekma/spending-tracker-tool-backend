@@ -9,7 +9,7 @@ CREATE TABLE transactions (
     sum numeric(14,2) not null,
     currency currency not null,
     paid timestamp with time zone not null,
-    created_at timestamp with time zone not null,
+    created_at timestamp with time zone not null ,
     updated_at timestamp with time zone not null
 );
 --rollback DROP TABLE transactions

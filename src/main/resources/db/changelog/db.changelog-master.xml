@@ -11,4 +11,5 @@
 
     <include file="changesets/00001_create_transactions_table_and_category_and_currency_enums.sql" relativeToChangelogFile="true"/>
     <include file="changesets/00002_drop_enums.sql" relativeToChangelogFile="true"/>
+    <include file="changesets/00003_default_transaction_timestamps.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

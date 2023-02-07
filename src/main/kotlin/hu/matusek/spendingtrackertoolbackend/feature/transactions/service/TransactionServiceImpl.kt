@@ -3,6 +3,8 @@ package hu.matusek.spendingtrackertoolbackend.feature.transactions.service
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.*
 import hu.matusek.spendingtrackertoolbackend.repository.TransactionRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -40,5 +42,20 @@ class TransactionServiceImpl(private val transactionRepository: TransactionRepos
             transactionRepository.deleteById(id)
         }
     }
+
+    override fun searchAndFilterTransactions(
+        pageable: Pageable,
+        transactionsFilter: TransactionsFilter
+    ): Page<TransactionResponse> =
+        transactionRepository.findAllFilteredAndPaged(
+            pageable,
+            transactionsFilter.category,
+            transactionsFilter.currency,
+            transactionsFilter.paidFrom,
+            transactionsFilter.paidTo,
+            transactionsFilter.sumFrom,
+            transactionsFilter.sumTo,
+            transactionsFilter.summary
+        ).map { it.toTransactionResponse() }
 
 }

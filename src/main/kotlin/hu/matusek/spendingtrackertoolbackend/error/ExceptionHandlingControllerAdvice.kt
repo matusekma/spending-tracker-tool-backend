@@ -10,6 +10,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -23,29 +24,34 @@ class ExceptionHandlingControllerAdvice(environment: Environment) {
         EntityNotFoundException::class,
         EmptyResultDataAccessException::class
     )
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handleEntityNotFoundException(e: Exception): ResponseEntity<ErrorResponse> =
-        createErrorResponse(HttpStatus.NOT_FOUND, "Entity not found!", e)
+        createErrorResponse(HttpStatus.NOT_FOUND, e.message ?: "Entity not found!", e)
 
 
     @ExceptionHandler(
         MethodArgumentNotValidException::class
     )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleInvalidRequestErrorException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request", e, e.fieldErrors)
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request", e)
 
     @ExceptionHandler(
         HttpRequestMethodNotSupportedException::class
     )
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     fun handleHttpRequestMethodNotSupportedException(e: Exception): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed!", e)
 
     @ExceptionHandler(
         Exception::class
     )
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleInternalServerErrorException(e: Exception): ResponseEntity<ErrorResponse> =
         createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error happened!", e)
 

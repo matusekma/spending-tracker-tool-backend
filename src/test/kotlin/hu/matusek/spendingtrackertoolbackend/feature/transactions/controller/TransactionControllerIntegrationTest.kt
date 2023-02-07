@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -26,6 +27,7 @@ import java.util.stream.Stream
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureWebTestClient
 class TransactionControllerIntegrationTest {
 
@@ -49,7 +51,7 @@ class TransactionControllerIntegrationTest {
 
             val transactionResponse = webTestClient
                 .get()
-                .uri("/transactions/${savedTransaction.id}")
+                .uri("/api/transactions/${savedTransaction.id}")
                 .exchange()
                 .expectStatus()
                 .isOk
@@ -65,7 +67,7 @@ class TransactionControllerIntegrationTest {
         fun `should return HTTP status Not Found when the transaction does not exist`() {
             webTestClient
                 .get()
-                .uri("/transactions/1")
+                .uri("/api/transactions/1")
                 .exchange()
                 .expectStatus()
                 .isNotFound
@@ -83,7 +85,7 @@ class TransactionControllerIntegrationTest {
 
             val createTransactionResponse = webTestClient
                 .post()
-                .uri("/transactions")
+                .uri("/api/transactions")
                 .bodyValue(createTransactionRequest)
                 .exchange()
                 .expectStatus()
@@ -107,7 +109,7 @@ class TransactionControllerIntegrationTest {
 
             webTestClient
                 .post()
-                .uri("/transactions")
+                .uri("/api/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(jsonTransaction.toString())
                 .exchange()
@@ -126,7 +128,7 @@ class TransactionControllerIntegrationTest {
         ) {
             webTestClient
                 .post()
-                .uri("/transactions")
+                .uri("/api/transactions")
                 .bodyValue(createTransactionRequest)
                 .exchange()
                 .expectStatus()
@@ -145,7 +147,7 @@ class TransactionControllerIntegrationTest {
         ) {
             webTestClient
                 .post()
-                .uri("/transactions")
+                .uri("/api/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(createTransactionRequestJson)
                 .exchange()
@@ -190,7 +192,7 @@ class TransactionControllerIntegrationTest {
 
             val editTransactionResponse = webTestClient
                 .put()
-                .uri("/transactions/${savedTransaction.id}")
+                .uri("/api/transactions/${savedTransaction.id}")
                 .bodyValue(editTransactionRequest)
                 .exchange()
                 .expectStatus()
@@ -222,7 +224,7 @@ class TransactionControllerIntegrationTest {
 
             val editTransactionResponse = webTestClient
                 .put()
-                .uri("/transactions/${savedTransaction.id}")
+                .uri("/api/transactions/${savedTransaction.id}")
                 .bodyValue(editTransactionRequest)
                 .exchange()
                 .expectStatus()
@@ -244,7 +246,7 @@ class TransactionControllerIntegrationTest {
 
             webTestClient
                 .post()
-                .uri("/transactions")
+                .uri("/api/transactions")
                 .bodyValue(editTransactionRequest)
                 .exchange()
                 .expectStatus()
@@ -262,7 +264,7 @@ class TransactionControllerIntegrationTest {
 
             webTestClient
                 .delete()
-                .uri("/transactions/${savedTransaction.id}")
+                .uri("/api/transactions/${savedTransaction.id}")
                 .exchange()
                 .expectStatus()
                 .isNoContent
@@ -274,7 +276,7 @@ class TransactionControllerIntegrationTest {
         fun `should be idempotent and not return error when the transaction does not exist`() {
             webTestClient
                 .delete()
-                .uri("/transactions/1")
+                .uri("/api/transactions/1")
                 .exchange()
                 .expectStatus()
                 .isNoContent

@@ -12,6 +12,7 @@ enum class Category {
     FINANCIAL,
     LIFESTYLE,
     ENTERTAINMENT,
+    CLOTHING,
     MISCELLANEOUS;
 
     @JsonValue

@@ -2,16 +2,34 @@ package hu.matusek.spendingtrackertoolbackend.feature.transactions.controller
 
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.*
 import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @Validated
-@RequestMapping("/transactions")
+@RequestMapping("/api/transactions")
 interface TransactionApi {
 
     @GetMapping("/{id}")
     fun getTransaction(@PathVariable("id") id: Long): TransactionResponse
+
+    @GetMapping
+    fun getTransactions(
+        @ParameterObject
+        @PageableDefault(
+            sort = ["paid"],
+            direction = Sort.Direction.DESC,
+            page = 0,
+            size = 10,
+        )
+        pageable: Pageable,
+        transactionsFilter: TransactionsFilter
+    ): Page<TransactionResponse>
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
