@@ -28,6 +28,7 @@ interface TransactionApi {
             size = 10,
         )
         pageable: Pageable,
+        @ParameterObject
         transactionsFilter: TransactionsFilter
     ): Page<TransactionResponse>
 
