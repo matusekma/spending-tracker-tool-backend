@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.time.OffsetDateTime
 
 @Validated
 @RequestMapping("/api/transactions")
@@ -45,4 +46,10 @@ interface TransactionApi {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteTransaction(@PathVariable("id") id: Long)
+
+    @GetMapping("/statistics")
+    fun calculateTransactionStatistics(
+        @RequestParam("paidFrom") paidFrom: OffsetDateTime?,
+        @RequestParam("paidTo") paidTo: OffsetDateTime
+    ): List<TransactionStatisticResponse>
 }

@@ -1,6 +1,7 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.dto
 
 import hu.matusek.spendingtrackertoolbackend.domain.Transaction
+import hu.matusek.spendingtrackertoolbackend.repository.dto.TransactionStatistic
 
 fun Transaction.toTransactionResponse() =
     TransactionResponse(
@@ -40,4 +41,11 @@ fun Transaction.toEditTransactionResponse() =
         sum = sum,
         currency = currency,
         paid = paid
+    )
+
+fun TransactionStatistic.toTransactionStatisticResponse() =
+    TransactionStatisticResponse(
+        currency = currency,
+        category = category.name.lowercase(),
+        sum = sum
     )

@@ -12,10 +12,6 @@ server:
 spring:
   application:
     name: spending-tracker-tool-backend
-#  security:
-#    user:
-#      name: user
-#      password: password
   datasource:
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}

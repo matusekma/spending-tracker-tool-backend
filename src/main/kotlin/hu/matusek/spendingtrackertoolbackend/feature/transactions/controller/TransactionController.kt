@@ -1,13 +1,11 @@
 package hu.matusek.spendingtrackertoolbackend.feature.transactions.controller
 
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.CreateTransactionRequest
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.EditTransactionRequest
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionResponse
-import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.TransactionsFilter
+import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.*
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.service.TransactionService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.RestController
+import java.time.OffsetDateTime
 
 @RestController
 class TransactionController(
@@ -33,4 +31,11 @@ class TransactionController(
     override fun deleteTransaction(id: Long) {
         transactionService.deleteTransactionById(id)
     }
+
+    override fun calculateTransactionStatistics(
+        paidFrom: OffsetDateTime?,
+        paidTo: OffsetDateTime
+    ): List<TransactionStatisticResponse> =
+        transactionService.calculateTransactionStatistics(paidFrom, paidTo)
+
 }

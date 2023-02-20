@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.OffsetDateTime
 
 @Service
 class TransactionServiceImpl(private val transactionRepository: TransactionRepository) : TransactionService {
@@ -57,5 +58,12 @@ class TransactionServiceImpl(private val transactionRepository: TransactionRepos
             transactionsFilter.sumTo,
             transactionsFilter.summary
         ).map { it.toTransactionResponse() }
+
+    override fun calculateTransactionStatistics(
+        paidFrom: OffsetDateTime?,
+        paidTo: OffsetDateTime?
+    ): List<TransactionStatisticResponse> =
+        transactionRepository.calculateTransactionStatisticsByCurrencyAndCategory(paidFrom, paidTo)
+            .map { it.toTransactionStatisticResponse() }
 
 }

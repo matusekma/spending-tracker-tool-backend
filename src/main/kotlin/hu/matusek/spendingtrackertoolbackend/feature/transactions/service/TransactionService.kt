@@ -3,6 +3,7 @@ package hu.matusek.spendingtrackertoolbackend.feature.transactions.service
 import hu.matusek.spendingtrackertoolbackend.feature.transactions.dto.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.OffsetDateTime
 
 interface TransactionService {
 
@@ -18,4 +19,8 @@ interface TransactionService {
         transactionsFilter: TransactionsFilter
     ): Page<TransactionResponse>
 
+    fun calculateTransactionStatistics(
+        paidFrom: OffsetDateTime?,
+        paidTo: OffsetDateTime?
+    ): List<TransactionStatisticResponse>
 }

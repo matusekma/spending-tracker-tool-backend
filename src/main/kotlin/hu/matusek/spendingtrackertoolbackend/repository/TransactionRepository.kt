@@ -3,6 +3,7 @@ package hu.matusek.spendingtrackertoolbackend.repository
 import hu.matusek.spendingtrackertoolbackend.domain.Category
 import hu.matusek.spendingtrackertoolbackend.domain.Currency
 import hu.matusek.spendingtrackertoolbackend.domain.Transaction
+import hu.matusek.spendingtrackertoolbackend.repository.dto.TransactionStatistic
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Query
@@ -36,4 +37,16 @@ interface TransactionRepository : CrudRepository<Transaction, Long> {
         summary: String?
     ): Page<Transaction>
 
+    @Query(
+        "select new hu.matusek.spendingtrackertoolbackend.repository.dto.TransactionStatistic(t.currency, t.category, SUM(t.sum)) " +
+                "from Transaction t " +
+                "where  " +
+                "(cast(:paidFrom as timestamp) is null or t.paid >= :paidFrom) AND " +
+                "(cast(:paidTo as timestamp) is null or t.paid <= :paidTo) " +
+                "group by t.currency, t.category "
+    )
+    fun calculateTransactionStatisticsByCurrencyAndCategory(
+        paidFrom: OffsetDateTime?,
+        paidTo: OffsetDateTime?,
+    ): List<TransactionStatistic>
 }
